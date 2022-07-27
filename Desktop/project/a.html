@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!--Title-->
+    <title>Simple Student Record</title>
+    <style>
+body {
+  background-image: url('d.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+
+}
+</style>
+
+     <!-- CSS File-->
+</head>
+<body style="background-color: skyblue">
+	<CENTER><h2>Simple Student Records</h2></CENTER>
+    <!--Table-->
+    <table>
+        <!--Row-1-->
+        <tr>
+            <!--Column-1-->
+            <td>
+                <!--Form-->
+                <form onsubmit="event.preventDefault();onFormSubmit();" autocomplete="off">
+                	<h3>Student Form</h3>
+                  <!--div-1-->
+                    <div>
+                        <label>First Name</label>
+                        <!--Validation Error-->
+                        <label class="validation-error hide" id="firstNamevalidationError">This field is required</label>
+                        <!--Input User Name-->
+                        <input type="text" name="firstName" id="firstName" placeholder="Enter the first Name">
+                    </div>
+                     <div>
+                        <label>last Name</label>
+                        <!--Validation Error-->
+                        <label class="validation-error hide" id="lastNamevalidationError">This field is required</label>
+                        <!--Input User Name-->
+                        <input type="text" name="lastName" id="lastName" placeholder="Enter the last Name">
+                    </div>
+                    
+                    <div class="form-action-buttons">
+                        <!--Input Button-->
+                        <input type="submit" value="Submit">
+                    </div>
+                </form>
+            </td>
+            <!--Column-2-->
+            <td>
+                <!--Nested Table-->
+                <table class="list" id="stdlist" style="background-color: #C2976D;">
+                    <!--Table Head-->
+                    <thead>
+                        <!--Row-2-->
+                        <tr>
+                            <th>First Name</th>
+                            <th> last name</th>
+                            
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <!--Table Body-->
+                    <tbody>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
+    <style>
+       body > table{
+    width: 100%;
+}
+
+table{
+    border-collapse: collapse;
+    text-align: center;
+}
+table.list{
+    width:100%;
+    text-align: center;
+}
+table.list td{
+    text-align: center;
+}
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+tr:nth-child(even),table.list thead>tr {
+    background-color: skyblue;
+}
+input[type=text], input[type=number] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+input[type=submit]{
+    width: 30%;
+    background-color: #ddd;
+    color: #000;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+form{
+    background-color: #AFEEEE ;
+    padding: 10px;
+
+}
+form div.form-action-buttons{
+    text-align: center;
+
+}
+a{
+    cursor: pointer;
+    text-decoration: underline;
+    color: #0000ee;
+    margin-right: 4px;
+}
+label.validation-error{
+    color:   red;
+    margin-left: 5px;
+}
+.hide{
+    display:none;
+}
+   </style>
+
+
+   <script>
+       var selectedRow = null
+
+// Form Submit Function
+function onFormSubmit() {
+    // check validity
+    if (validate()) {
+        // store user data
+        var formData = readFormData();
+        // check empty row
+        if (selectedRow == null)
+        {
+            // Insert New User Record
+            insertNewRecord(formData);
+        }
+        else
+        {
+            // Update New User Record
+            updateRecord(formData);
+        }
+        // Reset Input Values
+        resetForm();
+    }
+}
+// Get Values From Form
+function readFormData() {
+    var formData = {};
+    // Get Values From  Input
+    formData["firstName"] = document.getElementById("firstName").value;
+    formData["lastName"] = document.getElementById("lastName").value;
+    
+    return formData;
+}
+// Insert New User Record
+function insertNewRecord(data) {
+    var table = document.getElementById("stdlist").getElementsByTagName('tbody')[0];
+    var newRow = table.insertRow(table.length);
+    cell1 = newRow.insertCell(0);
+    cell1.innerHTML = data.firstName;
+    cell2 = newRow.insertCell(1);
+    cell2.innerHTML = data.lastName;
+    cell3 = newRow.insertCell(2);
+    cell3.innerHTML = `<a onClick="onEdit(this)">Edit</a>
+    <a onClick="onDelete(this)">Delete</a>`;
+}
+// Reset Function
+function resetForm() {
+    document.getElementById("firstName").value = "";
+    document.getElementById("lastName").value = "";
+    
+    selectedRow = null;
+}
+// Edit Function
+function onEdit(td) {
+    selectedRow = td.parentElement.parentElement;
+    document.getElementById("firstName").value = selectedRow.cells[0].innerHTML;
+    document.getElementById("lastName").value = selectedRow.cells[1].innerHTML;
+    
+}
+// Update Record
+function updateRecord(formData) {
+    selectedRow.cells[0].innerHTML = formData.firstName;
+    selectedRow.cells[1].innerHTML = formData.lastName;
+    
+}
+// Delete Function
+function onDelete(td) {
+    if (confirm('Are you sure to delete this record ?')) {
+        row = td.parentElement.parentElement;
+        document.getElementById("stdlist").deleteRow(row.rowIndex);
+        resetForm();
+    }
+}
+// Check User validation
+function validate() {
+    isValid = true;
+    // userName validation
+    if (document.getElementById("firstName").value == "") {
+        isValid = false;
+        document.getElementById("firstNamevalidationError").classList.remove("hide");
+    } else {
+        isValid = true;
+        if (!document.getElementById("firstNamevalidationError").classList.contains("hide"))
+        {
+            document.getElementById("firstNamevalidationError").classList.add("hide");
+        }
+    }
+    // last name validation
+    if (document.getElementById("lastName").value == "") {
+        isValid = false;
+        document.getElementById("lastNamevalidationError").classList.remove("hide");
+    } else {
+        isValid = true;
+        if (!document.getElementById("lastNamevalidationError").classList.contains("hide"))
+        {
+            document.getElementById("lastNamevalidationError").classList.add("hide");
+        }
+    }
+   
+    return isValid;
+}
+   </script>
